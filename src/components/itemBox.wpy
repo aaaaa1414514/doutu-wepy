@@ -1,0 +1,81 @@
+<template>
+    <view class="itemBox " >
+        <view class="title">
+        	<i>
+        		<image src="{{item.icon}}" />
+        	</i>{{item.title}}
+        </view>
+        <scroll-view scroll-x="true" class="scrollBox" >
+        	<view class="scrollItem" wx:for="{{itemBox}}" wx:key="key" >
+        		<view class="imageBox">
+        			<image src="{{item.img}}"/>
+        		</view>
+        		<view class="nameBox">
+					{{item.title}}
+        		</view>
+        	</view>
+        </scroll-view>
+    </view>
+</template> 
+
+<script>
+import wepy from 'wepy'
+
+export default class ItemBox extends wepy.component {
+	props= {
+		item:{}
+	}
+
+	data= {
+    	itemBox: [
+    		{title:"大吉大利",img:"../../images/20160701125111_PsWU8.thumb.700_0.jpeg"},
+    		{title:"晚上吃鸡",img:"../../images/20160701125111_PsWU8.thumb.700_0.jpeg"},
+    		{title:"绝地大逃杀",img:"../../images/20160701125111_PsWU8.thumb.700_0.jpeg"},
+    		{title:"蹲坑到底",img:"../../images/20160701125111_PsWU8.thumb.700_0.jpeg"}
+    	]
+	}
+
+	onLoad(){
+		console.log(this.item)
+	}
+}
+</script>
+
+<style lang="less">
+.itemBox{
+	margin-top:40rpx;
+	height:380rpx;
+	background:#fff;
+	white-space: nowrap;
+	.title{
+		padding-left:40rpx;
+		height:60rpx;
+		line-height:60rpx;
+		font-size:24rpx;
+		color:#444;
+		vertical-align:middle;
+	} 
+	.scrollBox{
+		height:320rpx;
+		white-space: nowrap;
+		.scrollItem{
+			width:250rpx;
+			height:100%;
+			display:inline-block;
+			.imageBox{
+				height:250rpx;
+			}
+			.nameBox{
+				height:70rpx;
+				line-height:70rpx;
+				text-align: center;
+				font-size:30rpx;
+				color:#262626
+			}
+		}
+	}
+	
+}
+
+
+</style>

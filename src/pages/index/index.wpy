@@ -1,0 +1,78 @@
+<template>
+  <view class="page">
+    <search></search>
+    <swiper></swiper>
+
+    <repeat for="{{list}}" key="index" index="index" item="item">
+      <itemBox :item="item"></itemBox>
+    </repeat>
+
+  </view>
+</template> 
+
+<script>
+import wepy from 'wepy'
+import Search from '../../components/search'
+import Swiper from '../../components/swiper'
+import ItemBox from '../../components/itemBox'
+
+
+export default class Index extends wepy.page {
+  config = {
+    navigationBarTitleText: '斗图'
+  }
+
+  data = {
+    list: [
+      {title:'今日热搜',icon:'../../images/resou.png',imgArr: [
+        {title:"大吉大利",img:"../../images/20160701125111_PsWU8.thumb.700_0.jpeg"},
+        {title:"晚上吃鸡",img:"../../images/20160701125111_PsWU8.thumb.700_0.jpeg"},
+        {title:"绝地大逃杀",img:"../../images/20160701125111_PsWU8.thumb.700_0.jpeg"},
+        {title:"蹲坑到底",img:"../../images/20160701125111_PsWU8.thumb.700_0.jpeg"}
+      ]},
+      {title:'搜索排行榜',icon:'../../images/paihangbang.png',imgArr: [
+        {title:"大吉大利",img:"../../images/20160701125111_PsWU8.thumb.700_0.jpeg"},
+        {title:"晚上吃鸡",img:"../../images/20160701125111_PsWU8.thumb.700_0.jpeg"},
+        {title:"绝地大逃杀",img:"../../images/20160701125111_PsWU8.thumb.700_0.jpeg"},
+        {title:"蹲坑到底",img:"../../images/20160701125111_PsWU8.thumb.700_0.jpeg"},
+        {title:"蹲坑到底",img:"../../images/20160701125111_PsWU8.thumb.700_0.jpeg"}
+      ]},
+      {title:'精选推荐',icon:'../../images/jingxuan.png',imgArr: [
+        {title:"大吉大利",img:"../../images/20160701125111_PsWU8.thumb.700_0.jpeg"},
+        {title:"晚上吃鸡",img:"../../images/20160701125111_PsWU8.thumb.700_0.jpeg"},
+        {title:"绝地大逃杀",img:"../../images/20160701125111_PsWU8.thumb.700_0.jpeg"},
+        {title:"蹲坑到底",img:"../../images/20160701125111_PsWU8.thumb.700_0.jpeg"}
+      ]}
+    ]
+  }
+
+  components = {
+    search: Search,
+    swiper: Swiper,
+    itemBox: ItemBox
+  }
+}
+</script>
+
+<style lang="less">
+.page{
+  background:#EFEFF4;
+  min-height:1110rpx;
+  i{
+    width:40rpx;
+    height:40rpx;
+    vertical-align: middle;
+    display:inline-block;
+    margin-right:10rpx;
+  }
+  image{
+    width:100%;
+    height:100%
+  }
+}
+
+
+
+
+
+</style>
