@@ -6,12 +6,14 @@
         	</i>{{item.title}}
         </view>
         <scroll-view scroll-x="true" class="scrollBox" >
-        	<view class="scrollItem" wx:for="{{itemBox}}" wx:key="key" >
+        	<view class="scrollItem" wx:for="{{item.imgArr}}" wx:key="key" >
         		<view class="imageBox">
-        			<image src="{{item.img}}"/>
+        			<navigator url="../../pages/main/index?tag={{item.tag}}" open-type="navigate">
+        				<image class="img" src="{{item.imgurl}}"/>
+        			</navigator>	
         		</view>
         		<view class="nameBox">
-					{{item.title}}
+					{{item.tag}}
         		</view>
         	</view>
         </scroll-view>
@@ -26,17 +28,10 @@ export default class ItemBox extends wepy.component {
 		item:{}
 	}
 
-	data= {
-    	itemBox: [
-    		{title:"大吉大利",img:"../../images/20160701125111_PsWU8.thumb.700_0.jpeg"},
-    		{title:"晚上吃鸡",img:"../../images/20160701125111_PsWU8.thumb.700_0.jpeg"},
-    		{title:"绝地大逃杀",img:"../../images/20160701125111_PsWU8.thumb.700_0.jpeg"},
-    		{title:"蹲坑到底",img:"../../images/20160701125111_PsWU8.thumb.700_0.jpeg"}
-    	]
-	}
 
 	onLoad(){
-		console.log(this.item)
+		
+
 	}
 }
 </script>
@@ -64,6 +59,12 @@ export default class ItemBox extends wepy.component {
 			display:inline-block;
 			.imageBox{
 				height:250rpx;
+				.img{
+					width:80%;
+					height:80%;
+					margin:10%;
+					border-radius:10rpx;
+				}
 			}
 			.nameBox{
 				height:70rpx;

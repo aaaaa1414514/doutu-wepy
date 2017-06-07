@@ -1,0 +1,17 @@
+
+    <view class="page">
+
+        <view class="container">
+            <view class="dateBox">
+                <view class="date">
+                    <image src="../../images/rili.png" class="img"/><span class="font">2017-1-1</span>
+                </view>
+
+                <view class="content">
+                    <view class="itembox">
+                        <image src=""/>
+                    </view>
+                </view>
+            </view>
+        </view> 
+    </view>

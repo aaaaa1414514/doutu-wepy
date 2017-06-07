@@ -1,0 +1,203 @@
+<template>
+    <view class="page" @touchstart="mytouchstart" @touchend="mytouchend">
+        <search :fixed="fixed"></search>
+       
+        <view class="container">
+            <view class="item" wx:for="{{imagesArr}}" wx:key="key" @tap="preview({{index}})">
+                <image src="{{item}}"  /> 
+            </view>
+        </view>    
+    </view>
+</template> 
+
+<script>
+import wepy from 'wepy'
+import Search from '../../components/search'
+export default class Main extends wepy.page {
+    config= {
+      navigationBarTitleText: '搜索图片'
+    }
+
+    data= {
+        fixed:true,
+        tag:null, 
+        imgData: [],
+        imagesArr:[
+            
+        ],
+        page:1
+    }
+
+
+    methods ={
+        mytouchstart(e){
+            this.startTime=e.timeStamp;
+           
+        },
+        mytouchend(e){
+            this.endTime=e.timeStamp;
+        },
+        preview(index){
+            let that= this;
+            let time= this.endTime - this.startTime;
+            if(time<300){
+                //预览
+                wx.previewImage({
+                    current: this.imagesArr[index],
+                    urls: this.imagesArr
+                })
+            }else{
+                //长按搜藏
+                wx.getStorage({
+                  key: 'session3rd',
+                  success(res){
+                    wx.request({
+                        url: 'https://www.tukaxiu.com/wxapi/index/collect',
+                        data:{
+                            id: that.imgData[index].id,
+                            session3rd: that.session3rd
+                        },
+                        success(data){
+                            if(data.data.status==1){
+                                wx.showToast({
+                                    title: data.data.msg,
+                                    icon: 'success'
+                                })
+                            }else{
+                                 wx.showToast({
+                                    title: data.data.msg,
+                                    icon: 'success'
+                                })
+                            }    
+                            
+                        }
+                    })
+                  },
+                  faill(){
+                    console.log('失败')
+                  }
+                })    
+                
+            }
+            
+        }
+    }
+
+    onLoad(options){
+        this.imagesArr= [];
+        this.page= 1;
+        this.tag= options.tag;
+        let that = this;
+        wx.showLoading({
+            title:'正在加载中...', 
+            mask: true
+        })
+
+    
+        wx.getStorage({
+            key: 'session3rd',
+            success(res){
+                that.session3rd= res.data; 
+
+                wx.request({
+                    url:"https://www.tukaxiu.com/wxapi/index/so",
+                    data:{
+                        tag: that.tag,
+                        page: that.page,
+                        session3rd: that.session3rd
+                    },
+                    success(res){
+                        if(res.data.status==500){
+                            wx.redirectTo({
+                                url: '../../pages/index/index' 
+                            })
+                        }else{
+                            let data= res.data.data;
+                            let len= data.length;
+                            if(len>0){
+                                let dataArr= [];
+                                for(var key in data){
+                                    dataArr.push(data[key].image)
+                                }
+                                that.imgData= data;
+                                that.imagesArr= dataArr;
+                                that.$apply();   
+                            }else{
+                                
+                            } 
+                            wx.hideLoading()
+                        }    
+                        
+                        
+                    }
+                })
+            }
+        })
+    }
+
+    onReachBottom(){
+        let that = this;
+        this.page++;
+        wx.showLoading({
+            title:'正在加载中...', 
+            mask: true
+        })
+        wx.request({
+            url:"https://www.tukaxiu.com/wxapi/index/so",
+            data:{
+                tag: that.tag,
+                page: that.page,
+                session3rd: that.session3rd
+            },
+            success(res){
+                let data= res.data.data;
+                let len= data.length;
+                if(len>0){
+                    let dataArr= [];
+                    for(var key in data){
+                        dataArr.push(data[key].image)
+                    }
+                    that.imgData= that.imgData.concat(data);
+                    that.imagesArr= that.imagesArr.concat(dataArr);
+                    that.$apply();   
+                }else{
+                    that.page--;
+                } 
+                wx.hideLoading()
+                
+            }
+        })
+    }
+
+    components = {
+        search: Search,
+    }
+}
+</script>
+
+<style lang="less">
+.page{
+    height:1206rpx;
+    .fixed{
+        position:fixed;
+        width:100%;
+        top:0;
+    }
+    .container{
+        margin-top:96rpx;
+        overflow: auto;
+        background:#EFEFF4;
+        padding-bottom:40rpx;
+        .item{
+            margin:10rpx;
+            width:230rpx;
+            height:230rpx;
+            float:left;
+            border-radius:20rpx;
+            overflow:hidden; 
+        }
+    }    
+    
+
+}
+</style>

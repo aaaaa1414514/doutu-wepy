@@ -1,0 +1,57 @@
+
+  <view class="page">
+    
+  	<view class="page__bd {{ $search$fixed ? 'fixed' : ''}}">
+        <view class="weui-search-bar">
+            <view class="weui-search-bar__form">
+                <view class="weui-search-bar__box">
+                    <icon class="weui-icon-search_in-box" type="search" size="14"/>
+                    <input type="text" class="weui-search-bar__input" placeholder="搜索" value="{{$search$inputVal}}" focus="{{$search$inputShowed}}" bindinput="$search$input" bindconfirm="$search$jump"/>
+                    <view class="weui-icon-clear"  wx:if="{{$search$inputVal.length > 0}}" bindtap="$search$clearInput">
+                        <icon type="clear" size="14"/>
+                    </view>
+                </view>
+                <label class="weui-search-bar__label" hidden="{{$search$inputShowed}}" bindtap="$search$showInput">
+                    <icon class="weui-icon-search" type="search" size="14"/>
+                    <view class="weui-search-bar__text">搜索</view>
+                </label>
+            </view>
+            <view class="weui-search-bar__cancel-btn" hidden="{{!$search$inputShowed}}" bindtap="$search$hideInput">取消</view>
+        </view>
+    </view>
+
+    
+  <swiper indicator-dots="{{$swiper$indicatorDots}}" autoplay="{{$swiper$autoplay}}" interval="{{$swiper$interval}}" duration="{{$swiper$duration}}" circular="{{$swiper$circular}}">
+    <block  wx:for="{{$swiper$imgUrls}}" wx:key="key">
+      <swiper-item>
+        <image src="{{item}}" class="slide-image" style="width:100%;height:100%"/>
+      </swiper-item>
+    </block>
+  </swiper>
+
+
+    <block wx:for="{{list}}" wx:for-index="index" wx:for-item="item" wx:key="index">
+      
+    <view class="itemBox ">
+        <view class="title">
+        	<i>
+        		<image src="{{item.icon}}"/>
+        	</i>{{item.title}}
+        </view>
+        <scroll-view scroll-x="true" class="scrollBox">
+        	<view class="scrollItem"  wx:for="{{item.imgArr}}" wx:key="key">
+        		<view class="imageBox">
+        			<navigator url="../../pages/main/index?tag={{item.tag}}" open-type="navigate">
+        				<image class="img" src="{{item.imgurl}}"/>
+        			</navigator>	
+        		</view>
+        		<view class="nameBox">
+					{{item.tag}}
+        		</view>
+        	</view>
+        </scroll-view>
+    </view>
+
+    </block>
+
+  </view>

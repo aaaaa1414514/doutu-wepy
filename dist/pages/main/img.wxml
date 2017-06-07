@@ -1,0 +1,10 @@
+
+    <view class="page">
+        <swiper bindtouchstart="mytouchstart" bindtouchend="mytouchend" bindtap="click">
+            <block  wx:for="{{imagesArr}}" wx:key="key">
+                <swiper-item class="item">
+                    <image src="{{item.img}}"/>
+                </swiper-item>
+            </block>
+        </swiper>
+    </view>

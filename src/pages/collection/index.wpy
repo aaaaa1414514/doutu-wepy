@@ -1,0 +1,124 @@
+<template>
+    <view class="page">
+
+        <view class="container">
+            <view class="dateBox">
+                <view class="date">
+                    <image src="../../images/rili.png" class='img'/><span class="font">2017-1-1</span>
+                </view>
+
+                <view class="content">
+                    <view class="itembox">
+                        <image src=""/>
+                    </view>
+                </view>
+            </view>
+        </view> 
+    </view>
+</template> 
+
+<script>
+import wepy from 'wepy'
+
+export default class Collect extends wepy.page {
+    config= {
+      navigationBarTitleText: '我的收藏'
+    }
+
+    data= {
+        imagesArr: [],
+        page: 1
+    }
+
+
+    methods ={
+
+    }
+
+    onLoad(){
+        let that= this;
+        //检查是否登录
+        wx.getStorage({
+            key: 'session3rd',
+            success(res){
+                that.session3rd= res.data; 
+                wx.request({
+                    url: "https://www.tukaxiu.com/wxapi/index/myCollect",
+                    data: {
+                        session3rd: that.session3rd,
+                        page: 1
+                    },
+                    success(res){
+                        let data= res.data;
+                        console.log(data)
+                        if(data.status==1){
+                            let dateObj= {};
+                            for(let key in data.data){
+                                if(dateObj.hasOwnProperty(data.data[key].ctime)){
+                                    continue;
+                                }
+                                dateObj[data.data[key].ctime]= []  
+                            }
+                            console.log(dateObj)
+                        }
+                       
+                    }
+                })
+            },
+            fail(){
+
+            }
+        })
+    }
+
+    onReachBottom(){
+        
+    }
+
+
+}
+</script>
+
+<style lang="less">
+.page{
+    height:1206rpx;
+    background:#fff;
+    .fixed{
+        position:fixed;
+        width:100%;
+        top:0;
+    }
+    .container{
+        overflow: auto;
+        padding-bottom:40rpx;
+        .dateBox{
+            border-bottom: 1px solid #ddd;
+            .date{
+                height:90rpx;
+                line-height:90rpx;
+                color:#666;
+                font-size:38rpx;
+                .img{
+                    width:50rpx;
+                    height:50rpx;
+                    vertical-align: middle;
+                    margin-left:40rpx;
+                }
+                .font{
+                    margin-left:40rpx;
+                }
+            }
+            .itembox{
+                margin:10rpx;
+                width:230rpx;
+                height:230rpx;
+                float:left;
+                border-radius:20rpx;
+                overflow:hidden; 
+            }
+        }
+    }    
+    
+
+}
+</style>

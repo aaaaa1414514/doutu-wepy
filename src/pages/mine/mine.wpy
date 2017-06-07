@@ -1,36 +1,159 @@
-<style lang="less">
-  .userinfo {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .userinfo-avatar {
-    width: 80rpx;
-    height: 80rpx;
-    border-radius: 50%;
-  }
-
-  .userinfo-nickname {
-  
-  }
-</style>
 <template>
-  <view>
-    <search></search>
-  </view>
+    <view class="page">
+    	<!--用户-->
+    	<view class="userInfo fex bottom">
+    		<view class="logo">
+    			<image src="{{logo}}"/>
+    		</view>
+    		<view class="flx infoBox" >
+				<view class="name">{{name}}</view>
+				<view class="code">ID:{{id}}</view>
+    		</view>
+    	</view>
+
+    	<!--收藏-->
+    	<view class="marT40 top bottom ul">
+    		<navigator url="../../pages/collection/index" open-type="navigate">
+	    		<view class="item">
+					<image src="../../images/shoucang.png" class="fl img"/>
+					<text class="title">我的收藏</text>
+					<text class="num">（{{num}}）</text>
+					<image class="fr img" src="../../images/you.png" />
+	    		</view>
+	    	</navigator>	
+    	</view>
+
+    	<!--工具框-->
+    	<view class="marT40 top bottom ul">
+    		<view class="item bottom" wx:for="{{toolbox}}" wx:key="key">
+				<image src="{{item.img}}" class="fl img"/>
+				<text class="title">{{item.title}}</text>
+				<image class="fr img" src="../../images/you.png"/>
+    		</view>
+    	</view>
+    </view>
 </template> 
 
 <script>
 import wepy from 'wepy'
-import Search from '../../components/search'
+
 
 export default class Mine extends wepy.page {
-  config = {
-    navigationBarTitleText: '斗图'
-  }
-  components = {
-    search: Search
-  }
+    config= {
+      navigationBarTitleText: '斗图'
+    }
+
+    data= {
+    	logo:null,
+    	name:null,
+    	id:0,
+    	num:0,
+    	toolbox:[
+    		{img:'../../images/wendang.png',title:"使用说明"},
+    		{img:'../../images/guanyu.png',title:"关于"}
+    	]
+    }
+
+    onLoad(){
+    	console.log(123)
+    	var that= this;
+    	wx.getUserInfo({
+    		success(ret){
+    			that.logo= ret.userInfo.avatarUrl;
+    			that.name= ret.userInfo.nickName;
+    			that.$apply();
+    		}
+    	})
+
+    	wx.getStorage({
+    		key: 'session3rd',
+    		success(res){
+    			that.session3rd= res.data;
+    			wx.request({
+		    		url:'https://www.tukaxiu.com/wxapi/index/userInfo',
+		    		data:{
+		    			session3rd: that.session3rd
+		    		},
+		    		success(res){
+		    			let data= res.data;
+		    			console.log(data);
+		    			if(data.status==1){
+		    				that.id= data.msg.id;
+		    				that.num= data.msg.cnum;
+		    			}
+		    		}
+		    	})
+    		},
+    		fail(){
+
+    		}
+    	})
+    	
+
+    }
+
+    components = {
+   
+    }
 }
 </script>
+
+<style lang="less">
+.page{
+	.userInfo{
+		height:200rpx;
+		background:#fff;
+		.logo{
+			width:140rpx;
+			height:140rpx;
+			background:#ddd;
+			border-radius:50%;margin:30rpx;
+			overflow:hidden;
+		}
+		.infoBox{
+			padding:40rpx 0;
+			.name{
+				font-size:50rpx;
+				color:#666
+			}
+			.code{
+				font-size:32rpx;
+				color:#aaa;
+			}
+		}
+	}
+	.top{
+		border-top:1px solid #ddd;
+	}
+	.bottom{
+		border-bottom:1px solid #ddd;
+	}
+	.ul{
+		background:#fff;
+		.item{
+			background:#fff;
+			line-height:90rpx;
+			margin-left:40rpx;
+			font-size:36rpx;
+			color:#666;
+			.img{
+				width:50rpx;
+				height:50rpx;
+				margin-top:20rpx;
+			}
+			.title{
+				margin-left:40rpx;
+			}
+			.num{
+				color:red
+			}
+		}
+		.item:last-child{
+			border-bottom:0;
+		}
+	}
+	.marT40{
+		margin-top:40rpx;
+	}
+}
+</style>

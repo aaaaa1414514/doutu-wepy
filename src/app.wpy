@@ -2,6 +2,27 @@
 .fex{display:flex};
 .fexC{flex-direction:column }
 .flx{flex:1}
+.fl{float:left}
+.fr{float:right}
+.page{
+  background:#EFEFF4;
+  i{
+    width:40rpx;
+    height:40rpx;
+    vertical-align: middle;
+    display:inline-block;
+    margin-right:10rpx;
+  }
+  image{
+    width:100%;
+    height:100%
+  }
+  navigator{
+    width:100%;
+    height:100%;
+    display:inline-block;
+  }
+}
 @import url('/css/weui.wxss');
 </style>
 
@@ -13,8 +34,12 @@ import 'wepy-async-function'
 export default class extends wepy.app {
   config = {
     pages: [
-      'pages/index/index',
-      'pages/mine/mine'
+       'pages/collection/index',
+      'pages/index/index',      
+      'pages/mine/mine',
+      'pages/main/index'
+      
+     
     ],
     window: {
       backgroundTextStyle: 'light',
@@ -24,7 +49,7 @@ export default class extends wepy.app {
     },
     "tabBar": {
       "color": "#8590a6",
-      "selectedColor": "#3cc51f",
+      "selectedColor": "#1296db",
       "borderStyle": "white",
       "backgroundColor": "#ffffff",
       "list": [
@@ -45,43 +70,14 @@ export default class extends wepy.app {
     }
   }
 
-  globalData = {
-    userInfo: null
-  }
 
-  constructor () {
-    super()
-    this.use('requestfix')
-  }
-
-  onLaunch() {
-    this.testAsync()
-  }
-
-  sleep (s) {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve('promise resolved')
-      }, s * 1000)
-    })
-  }
-
-  async testAsync () {
-    const data = await this.sleep(3)
-    console.log(data)
-  }
-
-  getUserInfo(cb) {
-    const that = this
-    if (this.globalData.userInfo) {
-      return this.globalData.userInfo
-    }
-    wepy.getUserInfo({
-      success (res) {
-        that.globalData.userInfo = res.userInfo
-        cb && cb(res.userInfo)
+  onLoad(){
+    wx.login({
+      success(data){
+        console.log(data)
       }
     })
+
   }
 }
 </script>

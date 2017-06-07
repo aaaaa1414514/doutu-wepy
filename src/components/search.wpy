@@ -1,10 +1,10 @@
 <template>
-  	<view class="page__bd">
+  	<view class="page__bd {{ fixed ? 'fixed' : ''}}">
         <view class="weui-search-bar">
             <view class="weui-search-bar__form">
                 <view class="weui-search-bar__box">
                     <icon class="weui-icon-search_in-box" type="search" size="14"></icon>
-                    <input type="text" class="weui-search-bar__input" placeholder="搜索" value="{{inputVal}}" focus="{{inputShowed}}" @input="input"  @confirm="aa"/>
+                    <input type="text" class="weui-search-bar__input" placeholder="搜索" value="{{inputVal}}" focus="{{inputShowed}}" @input="input"  @confirm="jump"/>
                     <view class="weui-icon-clear" wx:if="{{inputVal.length > 0}}" @tap="clearInput">
                         <icon type="clear" size="14"></icon>
                     </view>
@@ -27,6 +27,14 @@ export default class Search extends wepy.component {
     inputVal: ''
   }  
 
+  props= {
+    fixed:Boolean
+  }
+
+  onLoad(){
+
+  }
+
   methods= {
   	showInput(){
         this.inputShowed= true
@@ -37,14 +45,15 @@ export default class Search extends wepy.component {
     },
     clearInput(){
         this.inputVal= ""
-
     },
     input(e){
-       console.log(e.detail.value)
+       this.inputVal = e.detail.value;
        
     },
-    aa(e){
-        console.log(e)
+    jump(e){
+      wx.navigateTo({
+        url: "../../pages/main/index?tag="+this.inputVal
+      }) 
     }
   }	
 }

@@ -1,10 +1,10 @@
 <template>
   <view class="page">
-    <search></search>
+    <search :fixed="fixed" ></search>
     <swiper></swiper>
 
     <repeat for="{{list}}" key="index" index="index" item="item">
-      <itemBox :item="item"></itemBox>
+      <itemBox :item="item" :session3rd="session3rd"></itemBox>
     </repeat>
 
   </view>
@@ -16,32 +16,23 @@ import Search from '../../components/search'
 import Swiper from '../../components/swiper'
 import ItemBox from '../../components/itemBox'
 
-
 export default class Index extends wepy.page {
   config = {
     navigationBarTitleText: '斗图'
   }
 
   data = {
+    fixed:false,
+    session3rd:null,
     list: [
       {title:'今日热搜',icon:'../../images/resou.png',imgArr: [
-        {title:"大吉大利",img:"../../images/20160701125111_PsWU8.thumb.700_0.jpeg"},
-        {title:"晚上吃鸡",img:"../../images/20160701125111_PsWU8.thumb.700_0.jpeg"},
-        {title:"绝地大逃杀",img:"../../images/20160701125111_PsWU8.thumb.700_0.jpeg"},
-        {title:"蹲坑到底",img:"../../images/20160701125111_PsWU8.thumb.700_0.jpeg"}
+        
       ]},
       {title:'搜索排行榜',icon:'../../images/paihangbang.png',imgArr: [
-        {title:"大吉大利",img:"../../images/20160701125111_PsWU8.thumb.700_0.jpeg"},
-        {title:"晚上吃鸡",img:"../../images/20160701125111_PsWU8.thumb.700_0.jpeg"},
-        {title:"绝地大逃杀",img:"../../images/20160701125111_PsWU8.thumb.700_0.jpeg"},
-        {title:"蹲坑到底",img:"../../images/20160701125111_PsWU8.thumb.700_0.jpeg"},
-        {title:"蹲坑到底",img:"../../images/20160701125111_PsWU8.thumb.700_0.jpeg"}
+      
       ]},
       {title:'精选推荐',icon:'../../images/jingxuan.png',imgArr: [
-        {title:"大吉大利",img:"../../images/20160701125111_PsWU8.thumb.700_0.jpeg"},
-        {title:"晚上吃鸡",img:"../../images/20160701125111_PsWU8.thumb.700_0.jpeg"},
-        {title:"绝地大逃杀",img:"../../images/20160701125111_PsWU8.thumb.700_0.jpeg"},
-        {title:"蹲坑到底",img:"../../images/20160701125111_PsWU8.thumb.700_0.jpeg"}
+     
       ]}
     ]
   }
@@ -51,28 +42,89 @@ export default class Index extends wepy.page {
     swiper: Swiper,
     itemBox: ItemBox
   }
+
+  events = {
+
+  }
+
+  methods = {
+    //请求接口
+    getData(url,index){
+      let that= this;
+      wx.request({
+        url: url,
+        data: {
+          session3rd: that.session3rd
+        },
+        success(res){
+          if(res.status==500){
+            //this.login.call(that);
+          }else{
+            let data = res.data.data
+            that.list[index].imgArr = data;
+            that.$apply();
+          }
+         
+        }
+      })
+    },//登录
+    login(callback){
+      let that= this;
+      wx.login({
+        success(data){
+          if(data.code){
+            //获取用户授权得到信息
+            wx.getUserInfo({
+              success(info){
+                //登录
+                wx.request({
+                  url: 'https://www.tukaxiu.com/wxapi/wxLogin',
+                  data: {
+                    code: data.code,
+                    rawData: info.rawData,
+                    signature: info.signature,
+                    encryptData: info.encryptData,
+                    iv: info.iv,
+                    encryptedData: info.encryptedData
+                  },
+                  success(data){
+                    console.log('登陆成功')
+                    wx.setStorage({
+                      key: 'session3rd',
+                      data: data.data.data
+                    })
+                    that.session3rd= data.data.data;
+                    //获取数据
+                    if(callback){
+                      callback.call(that)
+                    }
+                  }
+                })
+              }
+            })
+
+          }
+        }
+      })
+    },//登陆成功调用接口
+    callback(){
+      this.methods.getData.call(this,"https://www.tukaxiu.com/wxapi/index/hotday",0)
+      //排行
+      this.methods.getData.call(this,"https://www.tukaxiu.com/wxapi/index/sonow",1)
+      //精选
+      this.methods.getData.call(this,"https://www.tukaxiu.com/wxapi/index/zan",2)
+    }
+  }
+
+  onLoad(){
+    //微信登录
+    this.methods.login.call(this,this.methods.callback)
+
+    
+  }
 }
+        
+ 
 </script>
 
-<style lang="less">
-.page{
-  background:#EFEFF4;
-  min-height:1110rpx;
-  i{
-    width:40rpx;
-    height:40rpx;
-    vertical-align: middle;
-    display:inline-block;
-    margin-right:10rpx;
-  }
-  image{
-    width:100%;
-    height:100%
-  }
-}
 
-
-
-
-
-</style>
